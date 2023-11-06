@@ -74,6 +74,12 @@ async function run() {
       res.clearCookie("token", { maxAge: 0 }).send({ success: true });
     });
 
+    //   get all assignment
+    app.get("/all/assignment", async (req, res) => {
+      const result = await assignmentCollection.find().toArray();
+      res.send(result);
+    });
+
     // insert assignment
     app.post("/create/assignment", async (req, res) => {
       const assignments = req.body;
@@ -81,6 +87,13 @@ async function run() {
       res.send(result);
     });
 
+    // delete assignment 
+       app.delete("/delete/assignment/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: new ObjectId(id) };
+         const result = await assignmentCollection.deleteOne(query);
+         res.send(result);
+       });
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
