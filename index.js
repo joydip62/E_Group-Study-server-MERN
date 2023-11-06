@@ -1,12 +1,37 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const app = express();
+app.use(cookieParser());
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-app.use(cors());
+// middleware
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+// token middleware
+const verifyToken = async (req, res, next) => {
+  const token = req.cookies?.token;
+  if (!token) {
+    return res.status(401).send({ message: "Not authorized" });
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: "Not authorized" });
+    }
+    // console.log("value in the token", decoded);
+    req.user = decoded;
+    next();
+  });
+};
 
 const port = process.env.PORT || 5000;
 
@@ -29,6 +54,26 @@ async function run() {
     const assignmentCollection = client
       .db("online-group-study")
       .collection("assignmentCollection");
+
+    // json web token
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      // console.log(user);
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+        })
+        .send({ success: true });
+    });
+    // logout api
+    app.post("/logout", async (req, res) => {
+      const user = req.body;
+      res.clearCookie("token", { maxAge: 0 }).send({ success: true });
+    });
 
 
     // Send a ping to confirm a successful connection
