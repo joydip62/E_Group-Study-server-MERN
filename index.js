@@ -58,7 +58,6 @@ async function run() {
     // json web token
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      // console.log(user);
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
@@ -75,6 +74,12 @@ async function run() {
       res.clearCookie("token", { maxAge: 0 }).send({ success: true });
     });
 
+    // insert assignment
+    app.post("/create/assignment", async (req, res) => {
+      const assignments = req.body;
+      const result = await assignmentCollection.insertOne(assignments);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
