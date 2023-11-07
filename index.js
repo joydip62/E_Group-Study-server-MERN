@@ -95,6 +95,32 @@ async function run() {
       res.send(result);
     });
 
+    // update assignment
+    app.put("/update-assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      
+      const options = { upsert: true };
+
+      const filter = { _id: new ObjectId(id) };
+
+      
+
+      const updatedData = {
+        $set: {
+          title: data.title,
+          marks: data.marks,
+          difficultyLevel: data.difficultyLevel,
+          description: data.description,
+          dueDate: data.dueDate,
+          image: data.image,
+        },
+      };
+      
+      const result = await assignmentCollection.
+      updateOne(filter, updatedData, options);
+      res.send(result);
+    });
 
     // delete assignment
     app.delete("/delete/assignment/:id", async (req, res) => {
