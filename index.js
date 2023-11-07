@@ -54,13 +54,10 @@ async function run() {
     const assignmentCollection = client
       .db("online-group-study")
       .collection("assignmentCollection");
-    
-    
+
     const assignmentSubmittedCollection = client
       .db("online-group-study")
       .collection("assignmentSubmittedCollection");
-    
-    
 
     // json web token
     app.post("/jwt", async (req, res) => {
@@ -106,12 +103,10 @@ async function run() {
     app.put("/update-assignment/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
-      
+
       const options = { upsert: true };
 
       const filter = { _id: new ObjectId(id) };
-
-      
 
       const updatedData = {
         $set: {
@@ -123,9 +118,12 @@ async function run() {
           image: data.image,
         },
       };
-      
-      const result = await assignmentCollection.
-      updateOne(filter, updatedData, options);
+
+      const result = await assignmentCollection.updateOne(
+        filter,
+        updatedData,
+        options
+      );
       res.send(result);
     });
 
@@ -139,15 +137,25 @@ async function run() {
 
     // =====================
 
-    // submitted assignment 
+    //  all assignment
+    app.get("/all-submitted-assignment", async (req, res) => {
+      const result = await assignmentSubmittedCollection.find().toArray();
+      res.send(result);
+    });
+    
+    //  my assignment
+    app.get("/my-assignment", async (req, res) => {
+      const result = await assignmentSubmittedCollection.find().toArray();
+      res.send(result);
+    });
+
+    // submitted assignment
     app.post("/submit/assignment", async (req, res) => {
       const assignments = req.body;
       const result = await assignmentSubmittedCollection.insertOne(assignments);
       res.send(result);
     });
-    
-    
-    
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
