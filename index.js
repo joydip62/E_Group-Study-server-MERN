@@ -54,6 +54,13 @@ async function run() {
     const assignmentCollection = client
       .db("online-group-study")
       .collection("assignmentCollection");
+    
+    
+    const assignmentSubmittedCollection = client
+      .db("online-group-study")
+      .collection("assignmentSubmittedCollection");
+    
+    
 
     // json web token
     app.post("/jwt", async (req, res) => {
@@ -129,6 +136,18 @@ async function run() {
       const result = await assignmentCollection.deleteOne(query);
       res.send(result);
     });
+
+    // =====================
+
+    // submitted assignment 
+    app.post("/submit/assignment", async (req, res) => {
+      const assignments = req.body;
+      const result = await assignmentSubmittedCollection.insertOne(assignments);
+      res.send(result);
+    });
+    
+    
+    
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
