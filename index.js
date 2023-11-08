@@ -80,8 +80,35 @@ async function run() {
 
     //   get all assignment
     app.get("/all/assignment", async (req, res) => {
+      // filtering
+      // let queryObj = {};
+      // const difficultyLevel = req.query.difficultyLevel;
+      // if (difficultyLevel) {
+      //   queryObj.difficultyLevel = difficultyLevel;
+      // }
+
+      // pagination
+      // const page = Number(req.query.page);
+      // const limit = Number(req.query.limit);
+
+      // const skip = (page - 1) * limit;
+
+      // const result = await assignmentCollection.find(queryObj).skip(skip).limit(limit).toArray();
+
+      
       const result = await assignmentCollection.find().toArray();
+
+      // count data
+      // const total = await assignmentCollection.countDocuments();
+
       res.send(result);
+      
+      // const check = res.send({
+      //   total,
+      //   result
+      // });
+
+      // console.log(check);
     });
 
     // insert assignment
