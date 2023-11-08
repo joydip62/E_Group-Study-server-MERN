@@ -9,15 +9,27 @@ app.use(cookieParser());
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // middleware
+// app.use(cors());
+
 app.use(
   cors({
     origin: [
-      "https://online-group-study-react.surge.sh/",
-      "http://localhost:5173",
+      "https://online-group-study-react.surge.sh"
     ],
     credentials: true,
   })
 );
+
+// app.use(
+//   cors({
+//     origin: [
+//       "https://online-group-study-react.surge.sh/",
+//       "http://localhost:5173",
+//     ],
+//     credentials: true,
+//   })
+// );
+
 app.use(express.json());
 
 // token middleware
